@@ -24,6 +24,31 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/:input?", function (req, res) {
+  let { input } = req.params;
+  let date;
+
+  if (!input) {
+    // Kalau kosong, pakai tanggal sekarang
+    date = new Date();
+  } else if (!isNaN(input)) {
+    // Kalau hanya angka, anggap UNIX timestamp
+    date = new Date(parseInt(input));
+  } else {
+    // Kalau bukan angka, anggap sebagai date string
+    date = new Date(input);
+  }
+
+  if (date.toString() === "Invalid Date") {
+    return res.json({ error: "Invalid Date" });
+  }
+
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
+});
+
 
 
 // Listen on port set in environment variable or default to 3000
